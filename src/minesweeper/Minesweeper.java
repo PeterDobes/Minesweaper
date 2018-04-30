@@ -9,14 +9,19 @@ import minesweeper.core.Field;
 public class Minesweeper {
     /** User interface. */
     private ConsoleUI userInterface;
+    private static long startMillis;
+    private static BestTimes bestTimes = new BestTimes();
+    private static Minesweeper instance;
  
     /**
      * Constructor.
      */
     private Minesweeper() {
+        instance = this;
         userInterface = new ConsoleUI();
         
         Field field = new Field(9, 9, 10);
+        startMillis = System.currentTimeMillis();
         userInterface.newGameStarted(field);
     }
 
@@ -26,5 +31,21 @@ public class Minesweeper {
      */
     public static void main(String[] args) {
         new Minesweeper();
+    }
+
+    public static BestTimes getBestTimes() {
+        return bestTimes;
+    }
+
+    public static void setBestTimes(BestTimes bestTimes) {
+        Minesweeper.bestTimes = bestTimes;
+    }
+
+    public int getPlayingSeconds() {
+        return (int) ((System.currentTimeMillis() - startMillis) / 1000);
+    }
+
+    public static Minesweeper getInstance() {
+        return instance;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import minesweeper.Minesweeper;
 import minesweeper.UserInterface;
 import minesweeper.core.*;
 
@@ -39,7 +40,7 @@ public class ConsoleUI implements UserInterface {
     @Override
     public void newGameStarted(Field field) {
         this.field = field;
-        System.out.println("Welcome sir or madam "+System.getProperty("user.name")+"\n");
+        System.out.println("Welcome sir or madam "+System.getProperty("user.name"));
         do {
             update();
             processInput();
@@ -60,6 +61,8 @@ public class ConsoleUI implements UserInterface {
      */
     @Override
     public void update() {
+        System.out.println(Minesweeper.getInstance().getPlayingSeconds());
+        System.out.println("\n"+"Remaining mines: "+field.getRemainingMineCount()+"\n");
         char[] rows = {' ','A','B','C','D','E','F','G','H','I'};
         for(int i = 0; i <= field.getRowCount(); i++){
             if(i == 1) {
@@ -89,6 +92,7 @@ public class ConsoleUI implements UserInterface {
             }
             System.out.println();
         }
+        System.out.println();
     }
     
     /**
@@ -96,12 +100,18 @@ public class ConsoleUI implements UserInterface {
      * Reads line from console and does the action on a playing field according to input string.
      */
     private void processInput() {
+        try {
+            handleInput(readLine());
+        } catch (WrongFormatException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    private void handleInput(String input) throws WrongFormatException {
         boolean inNok = true;
         while(inNok) {
             System.out.println();
             System.out.println("Zadaj prikaz alebo \"H\" ak nepoznas prikazy");
-            Scanner scan = new Scanner(System.in);
-            String input = scan.nextLine();
             Pattern p = Pattern.compile("(?i)([X])?(/help)?(([OM])([A-I])([0-8]))?");
             Matcher m = p.matcher(input.toLowerCase());
             if(m.matches()) {
@@ -113,9 +123,9 @@ public class ConsoleUI implements UserInterface {
                     case 'h':
                         System.out.println(
                                 "X - ukonci" + "\n" +
-                                "MXY - oznac pole" + "\n" +
-                                "OXY - otvor pole" + "\n" +
-                                "X -> A-I, Y -> 0-8 (suradnice)");
+                                        "MXY - oznac pole" + "\n" +
+                                        "OXY - otvor pole" + "\n" +
+                                        "X -> A-I, Y -> 0-8 (suradnice)");
                         inNok = true;
                         break;
                     case 'm':
@@ -129,7 +139,10 @@ public class ConsoleUI implements UserInterface {
                         field.openTile(rowO-97,colO-48);
                         break;
                 }
+            } else {
+                throw new WrongFormatException("Wrong Format Exception");
             }
         }
+
     }
 }

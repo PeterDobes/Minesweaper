@@ -1,5 +1,7 @@
 package minesweeper.core;
 
+import minesweeper.BestTimes;
+
 import java.util.Random;
 
 /**
@@ -69,9 +71,14 @@ public class Field {
      * @param column column number
      */
     public void markTile(int row, int column) {
-        if(tiles[row][column].getState() == Tile.State.CLOSED){
-            tiles[row][column].setState(Tile.State.MARKED);
-        } else {
+        Tile.State state = tiles[row][column].getState();
+        if (state == Tile.State.CLOSED) {
+            if (getRemainingMineCount() == 0) {
+                System.out.println("Can't mark any more tiles");
+            } else {
+                tiles[row][column].setState(Tile.State.MARKED);
+            }
+        } else if (state == Tile.State.MARKED) {
             tiles[row][column].setState(Tile.State.CLOSED);
         }
     }
@@ -198,5 +205,10 @@ public class Field {
 
     public Tile getTile(int row, int column){
         return tiles[row][column];
+    }
+
+    public int getRemainingMineCount() {
+        int marked = getNumberOf(Tile.State.MARKED);
+        return mineCount - marked;
     }
 }
