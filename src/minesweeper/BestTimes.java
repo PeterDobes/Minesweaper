@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class BestTimes implements Iterable<BestTimes.PlayerTime> {
     /** List of best player times. */
-    private List<PlayerTime> playerTimes = new ArrayList<PlayerTime>();
+    private List<PlayerTime> playerTimes = new ArrayList<>();
 
     /**
      * Returns an iterator over a set of  best times.
@@ -23,8 +23,9 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
      * @param time player time in seconds
      */
     public void addPlayerTime(String name, int time) {
-        PlayerTime plTim = new PlayerTime(name, time);
-        playerTimes.add(plTim);
+        PlayerTime player = new PlayerTime(name, time);
+        playerTimes.add(player);
+        Collections.sort(playerTimes);
     }
 
     /**
@@ -47,7 +48,7 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
     /**
      * Player time.
      */
-    public static class PlayerTime {
+    public static class PlayerTime implements Comparable<PlayerTime> {
         private final String name;
 
         private final int time;
@@ -70,6 +71,10 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
         /** Playing time in seconds. */
         public int getTime() {
             return time;
+        }
+
+        public int compareTo(PlayerTime o) {
+            return time - o.getTime();
         }
     }
 }
