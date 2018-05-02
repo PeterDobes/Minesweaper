@@ -3,6 +3,8 @@ package minesweeper;
 import minesweeper.consoleui.ConsoleUI;
 import minesweeper.core.Field;
 
+import java.util.Set;
+
 /**
  * Main application class.
  */
@@ -12,15 +14,17 @@ public class Minesweeper {
     private static long startMillis;
     private static BestTimes bestTimes = new BestTimes();
     private static Minesweeper instance;
- 
+    private Settings setting;
+
     /**
      * Constructor.
      */
     private Minesweeper() {
         instance = this;
         userInterface = new ConsoleUI();
+        setSetting(Settings.load());
         
-        Field field = new Field(9, 9, 1);
+        Field field = new Field(setting.getRowCount(), setting.getColumnCount(),setting.getMineCount());
         startMillis = System.currentTimeMillis();
         userInterface.newGameStarted(field);
     }
@@ -47,5 +51,14 @@ public class Minesweeper {
 
     public static Minesweeper getInstance() {
         return instance;
+    }
+
+    public Settings getSetting() {
+        return setting;
+    }
+
+    public void setSetting(Settings setting) {
+        this.setting = setting;
+        setting.save();
     }
 }

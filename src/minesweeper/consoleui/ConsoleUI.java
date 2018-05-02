@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import minesweeper.Minesweeper;
+import minesweeper.Settings;
 import minesweeper.UserInterface;
 import minesweeper.core.*;
 
@@ -61,9 +62,9 @@ public class ConsoleUI implements UserInterface {
      */
     @Override
     public void update() {
-        System.out.println(Minesweeper.getInstance().getPlayingSeconds());
-        System.out.println("\n"+"Remaining mines: "+field.getRemainingMineCount()+"\n");
-        char[] rows = {' ','A','B','C','D','E','F','G','H','I'};
+        System.out.println("\n"+Minesweeper.getInstance().getPlayingSeconds()+" seconds");
+        System.out.println("Remaining mines: "+field.getRemainingMineCount()+"\n");
+        char[] rows = {' ','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'};
         for(int i = 0; i <= field.getRowCount(); i++){
             if(i == 1) {
                 System.out.println();
@@ -71,7 +72,11 @@ public class ConsoleUI implements UserInterface {
             System.out.print(rows[i]+"  ");
             for(int j = 0; j < field.getColumnCount(); j++){
                 if(i == 0) {
-                    System.out.print(" " + j + " ");
+                    if (j < 10) {
+                        System.out.print(" " + j + " ");
+                    } else {
+                        System.out.print(" " + j);
+                    }
                 } else {
                     switch(field.getTile(i-1, j).getState()){
                         case CLOSED:
