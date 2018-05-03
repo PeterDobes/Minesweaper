@@ -1,9 +1,6 @@
 package minesweeper;
 
-import minesweeper.core.Field;
-
 import java.io.*;
-import java.util.List;
 
 public class Settings implements Serializable {
     private static final String SETTING_FILE = System.getProperty("user.home") +
@@ -17,7 +14,7 @@ public class Settings implements Serializable {
     public static final Settings INTERMEDIATE = new Settings(16, 16, 40);
     public static final Settings EXPERT = new Settings(16, 30, 99);
 
-    public Settings(int rowCount, int columnCount, int mineCount) {
+    private Settings(int rowCount, int columnCount, int mineCount) {
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.mineCount = mineCount;
@@ -36,7 +33,12 @@ public class Settings implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj == BEGINNER || obj == INTERMEDIATE || obj == EXPERT;
+        if (obj instanceof Settings) {
+            Settings settings = (Settings) obj;
+            return rowCount == settings.getRowCount() && columnCount == settings.getColumnCount()
+                    && mineCount == settings.getMineCount();
+        }
+        return false;
     }
 
 
@@ -47,7 +49,7 @@ public class Settings implements Serializable {
 
     public void save() {
         try (FileOutputStream os = new FileOutputStream(SETTING_FILE);
-             ObjectOutputStream oos = new ObjectOutputStream(os);) {
+             ObjectOutputStream oos = new ObjectOutputStream(os)) {
             oos.writeObject(this);
         } catch (IOException e) {
             System.err.println(e.getMessage());
