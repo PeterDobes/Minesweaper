@@ -9,6 +9,9 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
     /** List of best player times. */
     private List<PlayerTime> playerTimes = new ArrayList<>();
 
+    public BestTimes() {
+    }
+
     /**
      * Returns an iterator over a set of  best times.
      * @return an iterator
@@ -32,10 +35,11 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
      * Returns a string representation of the object.
      * @return a string representation of the object
      */
+
     public String toString() {
         Formatter f = new Formatter();
         for (int i = 0; i < playerTimes.size(); i++) {
-            f.format("%d %d %s", i+playerTimes.get(i).getTime()+playerTimes.get(i).getName());
+            f.format("%d %d %s", i +1, playerTimes.get(i).getTime(), playerTimes.get(i).getName()+ "\n");
         }
         return f.toString();
     }
@@ -49,9 +53,12 @@ public class BestTimes implements Iterable<BestTimes.PlayerTime> {
      * Player time.
      */
     public static class PlayerTime implements Comparable<PlayerTime> {
-        private final String name;
+        private String name = null;
 
-        private final int time;
+        private int time = 0;
+
+        public PlayerTime() {
+        }
 
         /**
          * Constructor.

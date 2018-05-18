@@ -3,12 +3,11 @@ package minesweeper.consoleui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import minesweeper.BestTimes;
 import minesweeper.Minesweeper;
-import minesweeper.Settings;
 import minesweeper.UserInterface;
 import minesweeper.core.*;
 
@@ -47,7 +46,10 @@ public class ConsoleUI implements UserInterface {
             processInput();
             if(field.getState() == GameState.SOLVED) {
                 update();
-                System.out.println("Solved");
+                System.out.println("Solved! Enter your name");
+                int time = Minesweeper.getInstance().getPlayingSeconds();
+                Minesweeper.getBestTimes().addPlayerTime(readLine(), time);
+                Minesweeper.getInstance().saveBestTimesIntoDatabase();
                 System.exit(0);
             } else if(field.getState() == GameState.FAILED) {
                 update();
@@ -56,7 +58,7 @@ public class ConsoleUI implements UserInterface {
             }
         } while(true);
     }
-    
+
     /**
      * Updates user interface - prints the field.
      */
@@ -117,7 +119,7 @@ public class ConsoleUI implements UserInterface {
         while(inNok) {
             System.out.println();
             System.out.println("Zadaj prikaz alebo \"H\" ak nepoznas prikazy");
-            Pattern p = Pattern.compile("(?i)([X])?(/help)?(([OM])([A-I])([0-8]))?");
+            Pattern p = Pattern.compile("(?i)([X])?([H])?(([OM])([A-I])([0-8]))?");
             Matcher m = p.matcher(input.toLowerCase());
             if(m.matches()) {
                 inNok = false;
@@ -131,23 +133,30 @@ public class ConsoleUI implements UserInterface {
                                         "MXY - oznac pole" + "\n" +
                                         "OXY - otvor pole" + "\n" +
                                         "X -> A-I, Y -> 0-8 (suradnice)");
-                        inNok = true;
+                        processInput();
                         break;
                     case 'm':
                         int rowM = m.group(0).charAt(1);
                         int colM = m.group(0).charAt(2);
-                        field.markTile(rowM-97,colM-48);
+                        if (rowM < field.getRowCount() && colM < field.getColumnCount()) {
+                            field.markTile(rowM - 97, colM - 48);
+                        } else {
+                            System.err.println("Suradnice mimo rozsah");
+                        }
                         break;
                     case 'o':
                         int rowO = m.group(0).charAt(1);
                         int colO = m.group(0).charAt(2);
-                        field.openTile(rowO-97,colO-48);
+                        if (rowO < field.getRowCount() && colO < field.getColumnCount()) {
+                            field.openTile(rowO - 97, colO - 48);
+                        } else {
+                            System.err.println("Suradnice mimo rozsah");
+                        }
                         break;
                 }
             } else {
                 throw new WrongFormatException("Wrong Format Exception");
             }
         }
-
     }
 }
